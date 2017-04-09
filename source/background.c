@@ -1654,12 +1654,12 @@ int background_solve(
       printf(" Scalar field details:\n");
       printf(" -> Omega_scf = %g, wished = %g\n",
 	     exp(pvecback[pba->index_bg_Omega_phi_scf]), pba->Omega0_scf);
-      printf(" -> lambda_scf = %1.2e\n",
+      printf(" -> theta_ini = %1.2e\n",
                pba->scf_parameters[0]);
-      printf(" -> Mass_scf = %5.4e [1/Mpc], %5.4e [eV], %5.4e [H_0]\n",
-             0.5*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 3.19696e-30*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 0.5*pvecback[pba->index_bg_y_phi_scf]);
-        printf(" -> wished = %1.2e [eV]\n",
-               pba->scf_parameters[1]);
+      //printf(" -> Mass_scf = %5.4e [1/Mpc], %5.4e [eV], %5.4e [H_0]\n",
+      //       0.5*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 3.19696e-30*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 0.5*pvecback[pba->index_bg_y_phi_scf]);
+      //  printf(" -> wished = %1.2e [eV]\n",
+      //         pba->scf_parameters[1]);
     }
     if(pba->has_lambda == _TRUE_){
       printf(" Lambda details:\n");
@@ -2092,7 +2092,10 @@ double y2_phi_scf(struct background *pba,
 		  double theta,
 		  double y1_phi
 		  ) {
-  double scf_lambda = pba->scf_parameters[0];
-  //General expression for: axion (lambda >0), quadratic (lambda =0), cosh (lambda < 0)
-  return  scf_lambda*exp(0.5*Omega_phi)*cos_scf(pba,0.5*theta);
+  double scf_alpha0 = pba->scf_parameters[1];
+  double scf_alpha1 = pba->scf_parameters[2];
+  double scf_alpha2 = pba->scf_parameters[3];
+  double y_scf = exp(0.5*Omega_phi)*cos_scf(pba,0.5*theta);
+  //General expression for quintessence potentials
+  return  scf_alpha0*y_scf + scf_alpha1*y1_phi + scf_alpha2*pow(y1_phi,2.)/y_scf;
 }

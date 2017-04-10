@@ -1013,8 +1013,8 @@ int input_read_parameters(
 
     /** - Initial conditions for scalar field variables */
     //printf(" -> Shooting = %1.2e\n",pba->scf_parameters[pba->scf_tuning_index]);
-    pba->Omega_phi_ini_scf = pba->scf_parameters[pba->scf_tuning_index]+log(1.e-56*pba->Omega0_scf*pba->Omega0_cdm/(pba->Omega0_g+pba->Omega0_ur));//Omega_ini;
-    pba->theta_phi_ini_scf = pba->scf_parameters[0];//theta_ini;
+    pba->Omega_phi_ini_scf = pba->scf_parameters[pba->scf_tuning_index]+log(1.e-56*pba->Omega0_scf*pba->Omega0_cdm/(pba->Omega0_g+pba->Omega0_ur));
+    pba->theta_phi_ini_scf = (4./9.)*1.e-28*pow(2.*pba->scf_parameters[0]*pba->Omega0_cdm/(pba->Omega0_g+pba->Omega0_ur),0.5);
 
     /** The initial condition for y1_phi_ini corresponds, or not, to the attractor value */
     class_call(parser_read_string(pfc,

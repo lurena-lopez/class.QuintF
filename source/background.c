@@ -399,7 +399,7 @@ int background_functions(
     pvecback[pba->index_bg_y_phi_scf] = y1_phi; // value of the scalar field y1_phi
     pvecback[pba->index_bg_rho_scf] = exp(Omega_phi)*rho_tot/(1.-exp(Omega_phi)); // energy of the scalar field
     pvecback[pba->index_bg_p_scf] = -cos_scf(pba,theta_phi)*pvecback[pba->index_bg_rho_scf];// pressure of the scalar field
-    rho_m += pvecback[pba->index_bg_rho_scf]; // add scalar field energy density into the total matter budget
+    //rho_m += pvecback[pba->index_bg_rho_scf]; // add scalar field energy density into the total matter budget
     rho_tot += pvecback[pba->index_bg_rho_scf]; // add scalar field density to the total one
     p_tot += pvecback[pba->index_bg_p_scf]; // add scalar field pressure to the total one
   }
@@ -1654,8 +1654,8 @@ int background_solve(
       printf(" Scalar field details:\n");
       printf(" -> Omega_scf = %g, wished = %g\n",
 	     exp(pvecback[pba->index_bg_Omega_phi_scf]), pba->Omega0_scf);
-      printf(" -> theta_ini = %1.2e\n",
-               pba->scf_parameters[0]);
+      printf(" -> 1+w_phi = %1.2e\n",
+               1-cos(pvecback[pba->index_bg_theta_phi_scf]));
       //printf(" -> Mass_scf = %5.4e [1/Mpc], %5.4e [eV], %5.4e [H_0]\n",
       //       0.5*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 3.19696e-30*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 0.5*pvecback[pba->index_bg_y_phi_scf]);
       //  printf(" -> wished = %1.2e [eV]\n",

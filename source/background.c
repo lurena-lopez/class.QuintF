@@ -1651,11 +1651,11 @@ int background_solve(
     printf(" -> age = %f Gyr\n",pba->age);
     printf(" -> conformal age = %f Mpc\n",pba->conformal_age);
     if (pba->has_scf == _TRUE_){
-      printf(" Scalar field details:\n");
+      printf(" Quintessence field details:\n");
       printf(" -> Omega_scf = %g, wished = %g\n",
 	     exp(pvecback[pba->index_bg_Omega_phi_scf]), pba->Omega0_scf);
-      printf(" -> 1+w_phi = %1.2e\n",
-               1-cos(pvecback[pba->index_bg_theta_phi_scf]));
+      printf(" -> theta0_phi = %1.2e, wished =%1.2e\n",
+               pvecback[pba->index_bg_theta_phi_scf], pba->theta0_scf);
       //printf(" -> Mass_scf = %5.4e [1/Mpc], %5.4e [eV], %5.4e [H_0]\n",
       //       0.5*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 3.19696e-30*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 0.5*pvecback[pba->index_bg_y_phi_scf]);
       //  printf(" -> wished = %1.2e [eV]\n",
@@ -2092,9 +2092,9 @@ double y2_phi_scf(struct background *pba,
 		  double theta,
 		  double y1_phi
 		  ) {
-  double scf_alpha0 = pba->scf_parameters[1];
-  double scf_alpha1 = pba->scf_parameters[2];
-  double scf_alpha2 = pba->scf_parameters[3];
+  double scf_alpha0 = pba->scf_parameters[0];
+  double scf_alpha1 = pba->scf_parameters[1];
+  double scf_alpha2 = pba->scf_parameters[2];
   double y_scf = exp(0.5*Omega_phi)*cos_scf(pba,0.5*theta);
   //General expression for quintessence potentials
   return  scf_alpha0*y_scf + scf_alpha1*y1_phi + scf_alpha2*pow(y1_phi,2.)/y_scf;

@@ -67,6 +67,7 @@ struct background
 
   double Omega_ini_dcdm;    /**< \f$ \Omega_{ini,dcdm} \f$: rescaled initial value for dcdm density (see 1407.2418 for definitions) */
   double Omega0_scf;        /**< \f$ \Omega_{0 scf} \f$ : scalar field */
+  double theta0_scf;
   short attractor_ic_scf;   /** < whether the scalar field has attractor initial conditions */
 
   double Omega_phi_ini_scf;        /**< \f$ \Omega_{0 scf} \f$ : scalar field 2*/

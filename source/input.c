@@ -228,9 +228,9 @@ int input_init(
    * These two arrays must contain the strings of names to be searched
    *  for and the corresponding new parameter */
   char * const target_namestrings[] = {"100*theta_s","Omega_dcdmdr","omega_dcdmdr",
-                                       "Omega_scf","Omega_ini_dcdm","omega_ini_dcdm"};
+                                       "Omega_scf","theta0_scf","Omega_ini_dcdm","omega_ini_dcdm"};
   char * const unknown_namestrings[] = {"h","Omega_ini_dcdm","Omega_ini_dcdm",
-                                        "scf_shooting_parameter","Omega_dcdmdr","omega_dcdmdr"};
+                                        "scf_shooting_parameter","scf_shooting_parameter1","Omega_dcdmdr","omega_dcdmdr"};
   enum computation_stage target_cs[] = {cs_thermodynamics, cs_background, cs_background,
                                         cs_background, cs_background, cs_background};
 
@@ -996,6 +996,7 @@ int input_read_parameters(
 
   /* Additional SCF parameters: */
     if (pba->Omega0_scf != 0.){
+    class_read_double("theta0_scf",pba->theta0_scf);
     /** - Read parameters describing scalar field potential */
     class_call(parser_read_list_of_doubles(pfc,
                                            "scf_parameters",
@@ -1010,11 +1011,13 @@ int input_read_parameters(
                "Tuning index scf_tuning_index = %d is larger than the number of entries %d in scf_parameters. Check your .ini file.",pba->scf_tuning_index,pba->scf_parameters_size);
     /** - Assign shooting parameter */
     class_read_double("scf_shooting_parameter",pba->scf_parameters[pba->scf_tuning_index]);
+    class_read_double("scf_shooting_parameter1",pba->scf_parameters[pba->scf_tuning_index+1]);
 
     /** - Initial conditions for scalar field variables */
-    //printf(" -> Shooting = %1.2e\n",pba->scf_parameters[pba->scf_tuning_index]);
-    pba->Omega_phi_ini_scf = pba->scf_parameters[pba->scf_tuning_index]+log(1.e-56*pba->Omega0_scf*pba->Omega0_cdm/(pba->Omega0_g+pba->Omega0_ur));
-    pba->theta_phi_ini_scf = (4./9.)*1.e-28*pow(2.*pba->scf_parameters[0]*pba->Omega0_cdm/(pba->Omega0_g+pba->Omega0_ur),0.5);
+        //printf(" -> Shooting = %1.2e\n",pba->scf_parameters[pba->scf_tuning_index]);
+        //printf(" -> Shooting1 = %1.2e\n",pba->scf_parameters[pba->scf_tuning_index+1]);
+    pba->Omega_phi_ini_scf = pba->scf_parameters[pba->scf_tuning_index]+log(1.e-56*pba->Omega0_scf*(pba->Omega0_cdm+pba->Omega0_b)/(pba->Omega0_g+pba->Omega0_ur));
+    pba->theta_phi_ini_scf = (4./9.)*1.e-28*pow(2.*(1-cos(pba->theta0_scf))*(pba->Omega0_cdm+pba->Omega0_b)/(pba->Omega0_g+pba->Omega0_ur),0.5)*exp(pba->scf_parameters[pba->scf_tuning_index+1]);
 
     /** The initial condition for y1_phi_ini corresponds, or not, to the attractor value */
     class_call(parser_read_string(pfc,
@@ -2823,6 +2826,7 @@ int input_default_params(
   pba->ncdm_psd_files = NULL;
 
   pba->Omega0_scf = 0.; /* Scalar field defaults */
+  pba->theta0_scf = 0.;
   pba->attractor_ic_scf = _TRUE_;
   pba->scf_parameters = NULL;
   pba->scf_parameters_size = 0;
@@ -3617,6 +3621,10 @@ int input_try_unknown_parameters(double * unknown_parameter,
       output[i] = ba.background_table[(ba.bt_size-1)*ba.bg_size+ba.index_bg_rho_scf]/(ba.H0*ba.H0)
         -ba.Omega0_scf;
       break;
+    case theta0_scf:
+      /** - In case scalar field is used to fill, pba->Omega0_scf is not equal to pfzw->target_value[i].*/
+            output[i] = ba.background_table[(ba.bt_size-1)*ba.bg_size+ba.index_bg_theta_phi_scf]-ba.theta0_scf;
+            break;
     case Omega_ini_dcdm:
     case omega_ini_dcdm:
       rho_dcdm_today = ba.background_table[(ba.bt_size-1)*ba.bg_size+ba.index_bg_rho_dcdm];
@@ -3766,6 +3774,11 @@ int input_get_guess(double *xguess,
       dxdy[index_guess] = 1.;
       /* } */
       break;
+    case theta0_scf:
+      /* Default: take the passed value as xguess and set dxdy to 1. */
+      xguess[index_guess] = ba.scf_parameters[ba.scf_tuning_index+1];
+      dxdy[index_guess] = 1.;
+      break;
     case omega_ini_dcdm:
       Omega0_dcdmdr = 1./(ba.h*ba.h);
     case Omega_ini_dcdm:
@@ -3900,6 +3913,7 @@ int input_auxillary_target_conditions(struct file_content * pfc,
   case Omega_dcdmdr:
   case omega_dcdmdr:
   case Omega_scf:
+  case theta0_scf:
   case Omega_ini_dcdm:
   case omega_ini_dcdm:
     /* Check that Omega's or omega's are nonzero: */

@@ -1654,8 +1654,8 @@ int background_solve(
       printf(" Quintessence field details:\n");
       printf(" -> Omega_scf = %g, wished = %g\n",
 	     exp(pvecback[pba->index_bg_Omega_phi_scf]), pba->Omega0_scf);
-      printf(" -> theta0_phi = %1.2e, wished =%1.2e\n",
-               pvecback[pba->index_bg_theta_phi_scf], pba->theta0_scf);
+      printf(" -> w_phi = %1.2e, wished =%1.2e\n",
+               -cos(pvecback[pba->index_bg_theta_phi_scf]), -cos(pba->theta0_scf));
       //printf(" -> Mass_scf = %5.4e [1/Mpc], %5.4e [eV], %5.4e [H_0]\n",
       //       0.5*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 3.19696e-30*pvecback[pba->index_bg_y_phi_scf]*pvecback[pba->index_bg_H], 0.5*pvecback[pba->index_bg_y_phi_scf]);
       //  printf(" -> wished = %1.2e [eV]\n",

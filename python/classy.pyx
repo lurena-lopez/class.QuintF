@@ -1209,6 +1209,16 @@ cdef class Class:
                 value = self.ba.Omega0_ncdm_tot*self.ba.h*self.ba.h*93.14
             elif name == 'Neff':
                 value = self.ba.Neff
+            elif name == 'w_phi':
+                value = -cos(self.ba.theta_phi_scf) 
+            elif name == 'y1_phi':
+                value = self.ba.y1_phi_scf 
+            elif name == 'm_phi':
+                value = 0.5*self.ba.h*100*self.ba.y1_phi_scf 
+            elif name == 'Omega_phi':
+                value = (1. - self.ba.Omega0_b - self.ba.Omega0_cdm-
+                         self.ba.Omega0_ncdm_tot - self.ba.Omega0_dcdm-
+			self.ba.Omega_lambda-self.ba.Omega_fld) 
             elif name == 'Omega_m':
                 value = (self.ba.Omega0_b + self.ba.Omega0_cdm+
                          self.ba.Omega0_ncdm_tot + self.ba.Omega0_dcdm)

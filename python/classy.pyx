@@ -844,8 +844,6 @@ cdef class Class:
 
         return omega0scf
 
-
-
     def y_phi(self):
         """
         y_phi 
@@ -869,10 +867,6 @@ cdef class Class:
         free(pvecback)
         return yphi
 
-
-
-
-
     def w_phi(self):
         """
         Return the w_phi variable for the Quint field defined in class as -np.cos(pvecback[self.ba.index_bg_theta_phi_scf])
@@ -895,6 +889,30 @@ cdef class Class:
         free(pvecback)
 
         return wphi
+
+    def m_phi(self):
+        """
+        Return the m_phi variable for the Quint field defined in class as 0.5*pvecback[self.ba.index_bg_theta_phi_scf]*pvecback[self.ba.index_bg_H]
+
+        """
+        cdef double tau,z=0.
+        cdef int last_index #junk
+        cdef double * pvecback
+
+        pvecback = <double*> calloc(self.ba.bg_size,sizeof(double))
+
+        if background_tau_of_z(&self.ba,z,&tau)==_FAILURE_:
+            raise CosmoSevereError(self.ba.error_message)
+
+        if background_at_tau(&self.ba,tau,self.ba.long_info,self.ba.inter_normal,&last_index,pvecback)==_FAILURE_:
+            raise CosmoSevereError(self.ba.error_message)
+
+        mphi= np.log10(3.19696e-30*pvecback[self.ba.index_bg_y_phi_scf]*pvecback[self.ba.index_bg_H])
+
+        free(pvecback)
+
+        return mphi
+
     def ionization_fraction(self, z):
         """
         ionization_fraction(z)
@@ -1423,6 +1441,8 @@ cdef class Class:
                 value=self.w_phi()
             elif name== 'y_phi':
                 value=self.y_phi()
+            elif name== 'm_phi':
+                value=self.m_phi()
             else:
                 raise CosmoSevereError("%s was not recognized as a derived parameter" % name)
             derived[name] = value

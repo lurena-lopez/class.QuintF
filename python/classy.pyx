@@ -907,7 +907,8 @@ cdef class Class:
         if background_at_tau(&self.ba,tau,self.ba.long_info,self.ba.inter_normal,&last_index,pvecback)==_FAILURE_:
             raise CosmoSevereError(self.ba.error_message)
 
-        mphi= np.log10(3.19696e-30*pvecback[self.ba.index_bg_y_phi_scf]*pvecback[self.ba.index_bg_H])
+#        mphi= np.log10(3.19696e-30*pvecback[self.ba.index_bg_y_phi_scf]*pvecback[self.ba.index_bg_H])
+        mphi= 3.19696e3*pvecback[self.ba.index_bg_y_phi_scf]*pvecback[self.ba.index_bg_H]
 
         free(pvecback)
 

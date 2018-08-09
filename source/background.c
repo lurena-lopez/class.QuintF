@@ -2095,7 +2095,8 @@ double y2_phi_scf(struct background *pba,
   double scf_alpha0 = pba->scf_parameters[0];
   double scf_alpha1 = pba->scf_parameters[1];
   double scf_alpha2 = pba->scf_parameters[2];
+  double scf_alpha3 = pba->scf_parameters[3];
   double y_scf = exp(0.5*Omega_phi)*cos_scf(pba,0.5*theta);
   //General expression for quintessence potentials
-  return  scf_alpha0*y_scf + scf_alpha1*y1_phi + scf_alpha2*pow(y1_phi,2.)/y_scf;
+  return  y_scf*(scf_alpha0 + scf_alpha1*y1_phi/y_scf + scf_alpha2*pow(y1_phi/y_scf,2.) + scf_alpha3*pow(y1_phi/y_scf,3.));
 }
